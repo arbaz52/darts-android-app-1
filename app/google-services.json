@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "571613899436",
+    "firebase_url": "https://fypqrf-b3259.firebaseio.com",
+    "project_id": "fypqrf-b3259",
+    "storage_bucket": "fypqrf-b3259.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571613899436:android:eeec8418a698a5ffcf4d09",
+        "android_client_info": {
+          "package_name": "com.zabar.dartsv3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571613899436-ktc4je66luhmp5inilaa1d164h54990l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zabar.dartsv3",
+            "certificate_hash": "9e548c9ba5b06819b0aff96f9b379f9fe0169592"
+          }
+        },
+        {
+          "client_id": "571613899436-nlkf8qr5e6g83vpddefo6t4p46umedvo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zabar.dartsv3",
+            "certificate_hash": "aec4bc618bd55d8a3931469e00730c8f3ea38cfb"
+          }
+        },
+        {
+          "client_id": "571613899436-a78071hm9cvjq57jhcgl4i2mgbdjh6b2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMsc2-zoLqw-uFfnD7PBJtvtTHXOV3VkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571613899436-a78071hm9cvjq57jhcgl4i2mgbdjh6b2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
