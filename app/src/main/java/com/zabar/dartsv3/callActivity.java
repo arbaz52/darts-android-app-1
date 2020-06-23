@@ -28,7 +28,7 @@ public class callActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call);
+        setContentView(R.layout.activity_call_modified);
 
         Intent intent = getIntent();
         String callerId, recipientId;
@@ -38,20 +38,18 @@ public class callActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         callState = (TextView) findViewById(R.id.callState);
         final SinchClient sinchClient = App.sinchClient;
-        button.setText("Call: " + recipientId);
+        if (call == null) {
+            call = App.callClient.callUser(recipientId);
+            call.addCallListener(new SinchCallListener());
+        }
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (call == null) {
-                    call = App.callClient.callUser(recipientId);
-                    call.addCallListener(new SinchCallListener());
-                    button.setText("Hang Up");
-                } else {
-                    call.hangup();
+                call.hangup();
 
-                    button.setText("Call: " + recipientId);
-                }
             }
+
         });
     }
     private class SinchCallListener implements CallListener {
@@ -59,19 +57,18 @@ public class callActivity extends AppCompatActivity {
         public void onCallEnded(Call endedCall) {
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
             call = null;
-            button.setText("Call");
-            callState.setText("");
+            callState.setText("Call ended");
         }
 
         @Override
         public void onCallEstablished(Call establishedCall) {
-            callState.setText("connected");
+            callState.setText("Connected");
             setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
         }
 
         @Override
         public void onCallProgressing(Call progressingCall) {
-            callState.setText("ringing");
+            callState.setText("Ringing");
         }
 
         @Override
@@ -85,7 +82,7 @@ public class callActivity extends AppCompatActivity {
             call = incomingCall;
             call.answer();
             call.addCallListener(new SinchCallListener());
-            button.setText("Hang Up");
+
         }
     }
 }

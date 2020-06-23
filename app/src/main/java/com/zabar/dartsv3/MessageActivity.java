@@ -100,9 +100,9 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 try {
                     messages.setAdapter(
-                            new InboxListAdapter(
+                            new MessageListAdapter(
                                     msgs,
-                                    MessageActivity.this)
+                                    MessageActivity.this, sender)
                     );
                 }catch(Exception ex){
                     Log.d("Log: ", "onDataChange: " + ex.getMessage());

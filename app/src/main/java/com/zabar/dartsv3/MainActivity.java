@@ -2,14 +2,19 @@ package com.zabar.dartsv3;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,14 +22,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.getSupportActionBar().hide();
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_login);
 
         Intent i = new Intent(this, InboxActivity.class);
         //startActivity(i);
 
-
-        Button loginBtn = findViewById(R.id.button);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout signupbtn=findViewById(R.id.signup);
+        SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
+        String key=sp.getString("myID","");
+        if(key.equals("")){
+            Toast.makeText(this, "Login first", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Intent loggedin=new Intent(MainActivity.this, MapsActivity.class);
+            startActivity(loggedin);
+        }
+        //Button loginBtn = findViewById(R.id.button);
+        signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
@@ -61,12 +78,10 @@ public class MainActivity extends AppCompatActivity {
             switch(requestCode){
                 case QR_CODE_RESULT:
 
-                    SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
-                    SharedPreferences.Editor spe=sp.edit();
-                    spe.putString("myID", data.getStringExtra("myID"));
-                    spe.commit();
-                    Intent intentTPL=new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intentTPL);
+                    String auth=data.getStringExtra("myID");
+                    ServerConnect server=new ServerConnect(this, auth);
+                    server.execute();
+
 
                     break;
             }

@@ -64,6 +64,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                     if(AlertsHandled == null || !AlertsHandled.contains(alertID)){
                         AlertsHandled.add(alertID);
 
+                        Log.d("KANWAL", "onDataChange: " + alertID);
                         fullname=item_snapshot.child("suspect").child("fullName").getValue().toString();
                         gender=item_snapshot.child("suspect").child("gender").getValue().toString();
                         for(DataSnapshot picture: item_snapshot.child("suspect").child("pictures").getChildren()){
@@ -74,7 +75,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                                 tags.add(tag.getValue().toString());
                         }
                         Suspect suspect=new Suspect(fullname, gender, pictures, tags);
-                        frame=item_snapshot.child("frame").getValue().toString();
+                        frame=item_snapshot.child("frame_url").getValue().toString();
                         longtitude=item_snapshot.child("location").child("longitude").getValue().toString();
                         latitude=item_snapshot.child("location").child("latitude").getValue().toString();
                         com.zabar.dartsv3.Location location=new com.zabar.dartsv3.Location(latitude, longtitude);
