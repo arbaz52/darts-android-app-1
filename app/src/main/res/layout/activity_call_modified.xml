@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    tools:context=".callActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="340dp"
+        android:layout_height="178dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        app:srcCompat="@drawable/contact" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="119dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="135dp"
+        android:layout_marginBottom="10dp"
+        android:capitalize="none"
+        android:gravity="center"
+        android:text="Name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#111010"
+        app:fontFamily="serif-monospace" />
+
+    <TextView
+        android:id="@+id/callState"
+        android:layout_width="119dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="135dp"
+        android:capitalize="none"
+        android:gravity="center"
+        android:text="Calling"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#111010"
+        android:textSize="18sp"
+        app:fontFamily="casual" />
+
+    <ImageButton
+        android:id="@+id/button"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="140dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/end" />
+
+</LinearLayout>

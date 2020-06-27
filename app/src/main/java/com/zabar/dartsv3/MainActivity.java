@@ -27,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
-        Intent i = new Intent(this, InboxActivity.class);
-        //startActivity(i);
+
 
         RelativeLayout signupbtn=findViewById(R.id.signup);
         SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
@@ -37,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Login first", Toast.LENGTH_SHORT).show();
         }
         else{
+            ServerConnect_QR serverQR=new ServerConnect_QR(this,key);
+            serverQR.execute();
             Intent loggedin=new Intent(MainActivity.this, MapsActivity.class);
             startActivity(loggedin);
         }
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     String auth=data.getStringExtra("myID");
                     ServerConnect server=new ServerConnect(this, auth);
                     server.execute();
+
 
 
                     break;

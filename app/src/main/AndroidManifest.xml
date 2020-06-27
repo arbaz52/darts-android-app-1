@@ -73,7 +73,8 @@
 
         <activity android:name=".AcceptCallActivity" />
         <activity android:name=".CurrentCallActivity" />
-        <activity android:name=".DisplayQRUnits"></activity>
+        <activity android:name=".DisplayQRUnits" />
+        <activity android:name=".QRunitActivity"></activity>
     </application>
 
 </manifest>
