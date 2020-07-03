@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,8 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Intent check = new Intent(this, QRunitActivity.class);
-        startActivity(check);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
@@ -70,6 +71,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        FloatingActionButton units_icon = findViewById(R.id.units_icon);
+        units_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent unitsIntent=new Intent(MapsActivity.this, QRunitActivity.class);
+                startActivity(unitsIntent);
+            }
+        });
+
+        FloatingActionButton inbox_icon = findViewById(R.id.inbox_icon);
+        inbox_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent inboxIntent=new Intent(MapsActivity.this, InboxActivity.class);
+                startActivity(inboxIntent);
+            }
+        });
+
+        FloatingActionButton my_location = findViewById(R.id.my_location);
+        my_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                where_am_I();
+            }
+        });
 
         Intent suspectIntent=getIntent();
         if (suspectIntent.getStringExtra("Alert") != null){

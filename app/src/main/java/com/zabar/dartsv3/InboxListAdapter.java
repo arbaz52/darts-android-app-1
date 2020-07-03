@@ -79,12 +79,12 @@ public class InboxListAdapter implements ListAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getViewTypeCount() {
-        return getCount();
+        return 1;
     }
 
     @Override

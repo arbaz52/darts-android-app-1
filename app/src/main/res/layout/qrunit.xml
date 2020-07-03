@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/call_icon"
         android:layout_width="37dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
@@ -27,6 +27,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/phone" />
+
+    <ImageView
+        android:id="@+id/msg_icon"
+        android:layout_width="37dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/call_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/msg" />
 
     <TextView
         android:id="@+id/ID"
