@@ -1,9 +1,18 @@
 package com.zabar.dartsv3;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class QRUnit {
@@ -40,4 +49,42 @@ public class QRUnit {
 
     }
 
+
+    //load data from server
+    public static ArrayList<QRUnit> getQRUnits(Context context){
+        ArrayList<QRUnit> qrunits = new ArrayList<>();
+
+        SharedPreferences sp= context.getSharedPreferences("authInfo",0 );
+        String key=sp.getString("myID","");
+        ServerConnect_QR serverQR=new ServerConnect_QR(context,key);
+        serverQR.execute();
+
+        String unitString=sp.getString("units_array","");
+        try {
+            JSONArray jsonarray=new JSONArray(unitString);
+            for (int i = 0; i <jsonarray.length(); i++){
+                JSONObject jb = (JSONObject) jsonarray.get(i);
+                QRUnit item = QRUnit.fromJSONObject(jb);
+                if(item == null){
+                    continue;
+                }
+                qrunits.add(item);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return qrunits;
+
+    }
+
+
+    public static QRUnit getQRUnit(ArrayList<QRUnit> qrunits, String _id){
+        for(QRUnit qrunit: qrunits){
+            if(qrunit.ID.equals(_id))
+                return qrunit;
+        }
+        return null;
+    }
 }

@@ -1,12 +1,17 @@
 package com.zabar.dartsv3;
 
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,7 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -28,16 +35,14 @@ public class MessageActivity extends AppCompatActivity {
     String sender;
     String recvr;
 
-    ListView messages;
+    RecyclerView messages;
 
+    MessageAdapter ma;
+    ArrayList<QRUnit> qrunits;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        message=findViewById(R.id.message);
-        send=findViewById(R.id.send);
-
-        messages = findViewById(R.id.messages);
 
         SharedPreferences sp=getSharedPreferences("authInfo", 0);
         sender=sp.getString("myID", "not logged in");
@@ -45,6 +50,30 @@ public class MessageActivity extends AppCompatActivity {
         Intent intent=getIntent();
         ID=intent.getStringExtra("ID");
         recvr = ID;
+
+
+        //loading qrunits
+        qrunits = QRUnit.getQRUnits(this);
+
+        message=findViewById(R.id.btnMessage);
+        send=findViewById(R.id.send);
+
+        messages = findViewById(R.id.messages);
+        messages.setLayoutManager(new LinearLayoutManager(this));
+        ArrayList<Message> msgs = new ArrayList<>();
+        ma = new MessageAdapter(msgs,MessageActivity.this, sender);
+        messages.setAdapter(ma);
+
+
+
+        //setting title about who you're texting
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("Conversation");
+        QRUnit qrunit = QRUnit.getQRUnit(qrunits, recvr);
+        String name = "";
+        if(qrunit != null)
+            name = qrunit.name;
+        ab.setSubtitle(name);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -56,9 +85,13 @@ public class MessageActivity extends AppCompatActivity {
                 temp.child("recvr").setValue(ID);
                 temp.child("message").setValue(message.getText().toString());
                 temp.child("sndr").setValue(sender);
+                Timestamp t = new Timestamp(Calendar.getInstance().getTimeInMillis());
+                temp.child("time").setValue(t.toString());
+
+
+                message.setText("");
             }
         });
-
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -70,40 +103,47 @@ public class MessageActivity extends AppCompatActivity {
                     String msg_recvr, msg_sndr;
 
                     if(!item_snapshot.hasChild("sndr") ||
-                            !item_snapshot.hasChild("recvr")){
+                            !item_snapshot.hasChild("recvr") ||
+                            !item_snapshot.hasChild("time") ||
+                            !item_snapshot.hasChild("message")){
                         continue;
                     };
+                    String time = item_snapshot.child("time").getValue().toString();
+                    Timestamp currentTime = Timestamp.valueOf(time);
+
                     msg_recvr=item_snapshot.child("recvr").getValue().toString();
                     msg_sndr=item_snapshot.child("sndr").getValue().toString();
                     if(msg_sndr.equals(sender) &&  msg_recvr.equals(recvr)){
-                        User sndr=new User(msg_sndr,msg_sndr);
-                        User recvr=new User(msg_recvr,msg_recvr);
+                        QRUnit sndr = QRUnit.getQRUnit(qrunits, msg_sndr);
+                        QRUnit recvr = QRUnit.getQRUnit(qrunits, msg_recvr);
+
                         Message msg=new Message(
                                 item_snapshot.getKey().toString(),
                                 recvr,
                                 sndr,
-                                item_snapshot.child("message").getValue().toString()
+                                item_snapshot.child("message").getValue().toString(),
+                                currentTime
                         );
                         msgs.add(msg);
                     }else if(msg_sndr.equals(recvr) &&  msg_recvr.equals(sender)){
 
-                        User sndr=new User(msg_sndr,msg_sndr);
-                        User recvr=new User(msg_recvr,msg_recvr);
+                        QRUnit sndr = QRUnit.getQRUnit(qrunits, msg_sndr);
+                        QRUnit recvr = QRUnit.getQRUnit(qrunits, msg_recvr);
+
                         Message msg=new Message(
                                 item_snapshot.getKey().toString(),
                                 recvr,
                                 sndr,
-                                item_snapshot.child("message").getValue().toString()
+                                item_snapshot.child("message").getValue().toString(),
+                                currentTime
                         );
                         msgs.add(msg);
                     }
                 }
                 try {
-                    messages.setAdapter(
-                            new MessageListAdapter(
-                                    msgs,
-                                    MessageActivity.this, sender)
-                    );
+                    ma.update(msgs);
+                    ma.notifyDataSetChanged();
+                    messages.scrollToPosition(msgs.size()-1);
                 }catch(Exception ex){
                     Log.d("Log: ", "onDataChange: " + ex.getMessage());
                 }

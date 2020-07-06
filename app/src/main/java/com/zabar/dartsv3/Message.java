@@ -1,13 +1,18 @@
 package com.zabar.dartsv3;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 class Message {
     String ID,  message;
-    User sndr, recvr;
+    QRUnit sndr, recvr;
+    Timestamp time;
 
-    public Message(String ID, User recvr, User sndr, String message) {
+    public Message(String ID, QRUnit recvr, QRUnit sndr, String message, Timestamp time) {
         this.ID = ID;
         this.recvr = recvr;
         this.sndr = sndr;
         this.message = message;
+        this.time = time;
     }
 }

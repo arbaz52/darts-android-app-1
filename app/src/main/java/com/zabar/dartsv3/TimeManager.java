@@ -1,0 +1,34 @@
+package com.zabar.dartsv3;
+
+import java.sql.Timestamp;
+
+public class TimeManager {
+    public static String difference(Timestamp latest, Timestamp oldest){
+        String difference = "";
+        long milis = latest.getTime() - oldest.getTime();
+        long seconds = milis/1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        long month = days / 30;
+        long year = month / 365;
+
+        int s = (int) (seconds % 60);
+        int m = (int) (minutes % 60);
+        int h = (int) (hours % 24);
+        int d = (int) (days % 30);
+        int M = (int) (month % 12);
+        int y = (int) (year);
+
+//        difference = String.format("%4d/%2d/%2d %2d:%2d:%2d ago", y, M, d, h, m, s);
+
+        difference += year >= 1 ? y+"y ": "";
+        difference += month >= 1 ? M+"M ": "";
+        difference += days >= 1 ? d+"D ": "";
+        difference += hours >= 1 ? h+"h ": "";
+        difference += minutes >= 1 ? m+"m ": "";
+        difference += seconds >= 1 ? s+"s ": "";
+        difference += "ago";
+        return difference;
+    }
+}

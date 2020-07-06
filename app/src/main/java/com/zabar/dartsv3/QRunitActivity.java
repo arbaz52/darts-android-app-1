@@ -2,9 +2,12 @@ package com.zabar.dartsv3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -27,26 +30,20 @@ public class QRunitActivity extends AppCompatActivity {
         serverQR.execute();
 
         QRunits=findViewById(R.id.qrlist);
-        ArrayList<QRUnit> units=new ArrayList();
+        ArrayList<QRUnit> qrunits = QRUnit.getQRUnits(this);
 
-        String unitString=sp.getString("units_array","");
-        Log.d("KANWAL", "onCreate: " + unitString);
-        //http://localhost:3000/qrunit/5ef225f06226a01148c0aba2
-        try {
-            JSONArray jsonarray=new JSONArray(unitString);
-            for (int i = 0; i <jsonarray.length(); i++){
-                JSONObject jb = (JSONObject) jsonarray.get(i);
-                QRUnit item = QRUnit.fromJSONObject(jb);
-                if(item == null){
-                    continue;
-                }
-                units.add(item);
+        QRunits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(QRunitActivity.this, QRUnitInfoActivity.class);
+                String _id = qrunits.get(position).ID;
+                i.putExtra("_id", _id);
+                startActivity(i);
+
             }
+        });
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        QRunits.setAdapter(new QRunitsListAdapter(this, units));
+        QRunits.setAdapter(new QRunitsListAdapter(this, qrunits));
 
 
     }

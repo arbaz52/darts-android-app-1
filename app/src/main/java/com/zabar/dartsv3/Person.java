@@ -14,7 +14,7 @@ public class Person {
 
     public static Person fromJSONObject(JSONObject jb){
         try {
-            return new Person(jb.getString("_id"), jb.getString("fullName"), jb.getString("gender"), jb.getString(("picture_url)")));
+            return new Person(jb.getString("_id"), jb.getString("fullName"), jb.getString("gender"), jb.getString("picture_url"));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

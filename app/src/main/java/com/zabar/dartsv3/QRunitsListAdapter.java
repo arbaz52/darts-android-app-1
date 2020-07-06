@@ -68,18 +68,10 @@ public class QRunitsListAdapter implements ListAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.qrunit, parent, false);
         TextView name, members ,ID;
-        ImageView msg_icon=view.findViewById(R.id.msg_icon);
         name=view.findViewById(R.id.name);
         members=view.findViewById(R.id.members);
         ID=view.findViewById(R.id.ID);
         members.setText(units.get(position).members.size()+" members");
-        msg_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent msgintent=new Intent(context, MessageActivity.class);
-                msgintent.putExtra("ID", ID.toString());
-            }
-        });
         //can there be a thing where we click on the list item and a window pops up showing member's names?
         //with an option of going to there location or back
         //code to click on call image and it takes you to calling activity. IDK which one it is.

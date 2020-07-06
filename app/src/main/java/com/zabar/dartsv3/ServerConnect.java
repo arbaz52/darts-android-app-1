@@ -20,7 +20,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ServerConnect extends AsyncTask<String, String, String> {
-    public static final String SERVER_IP="http://192.168.100.138:3000";
+    public static final String SERVER_IP="http://192.168.0.100:3000";
     public static final String TAG="kanwal";
 
     Context context;
