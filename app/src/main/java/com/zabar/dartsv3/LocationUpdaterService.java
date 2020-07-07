@@ -1,6 +1,7 @@
 package com.zabar.dartsv3;
 
 import android.Manifest;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -30,9 +31,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class LocationUpdaterService extends Service implements LocationListener {
     String myID;
+    String CHANNEL_ID="ALERT";
+    NotificationCompat.Builder mBuilder;
     FirebaseDatabase fd;
     DatabaseReference dbref;
     DatabaseReference alertref;
@@ -55,33 +59,29 @@ public class LocationUpdaterService extends Service implements LocationListener 
         alertref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String fullname, gender, frame, alertID;
-                String longtitude, latitude;
-                ArrayList<String> tags = new ArrayList<>();
-                ArrayList<String> pictures = new ArrayList<>();
+                String  alertID;
+
                 for(DataSnapshot item_snapshot:dataSnapshot.getChildren()) {
                     alertID=item_snapshot.getKey().toString();
                     if(AlertsHandled == null || !AlertsHandled.contains(alertID)){
                         AlertsHandled.add(alertID);
 
-                        Log.d("KANWAL", "onDataChange: " + alertID);
-                        fullname=item_snapshot.child("suspect").child("fullName").getValue().toString();
-                        gender=item_snapshot.child("suspect").child("gender").getValue().toString();
-                        for(DataSnapshot picture: item_snapshot.child("suspect").child("pictures").getChildren()){
-                            pictures.add(picture.getValue().toString());
-                        }
+                        createNotificationChannel();
+                        Intent alertIntent=new Intent(getApplicationContext(), MapsActivity.class);
+                        alertIntent.putExtra("Alert", alertID);
+                        alertIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, alertIntent, 0);
 
-                        for(DataSnapshot tag: item_snapshot.child("suspect").child("tags").getChildren()){
-                                tags.add(tag.getValue().toString());
-                        }
-                        //Suspect suspect=new Suspect(fullname, gender, pictures, tags);
-                        frame=item_snapshot.child("frame_url").getValue().toString();
-                        longtitude=item_snapshot.child("location").child("longitude").getValue().toString();
-                        latitude=item_snapshot.child("location").child("latitude").getValue().toString();
-                        com.zabar.dartsv3.Location location=new com.zabar.dartsv3.Location(latitude, longtitude);
-                        //Alert alert=new Alert(alertID, frame, location, suspect);
+                        mBuilder= new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                .setSmallIcon(R.drawable.icon)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setContentTitle("Alert")
+                                .setContentText("Suspect is caught on camera")
+                                .setContentIntent(pendingIntent);
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                        notificationManager.notify(1, mBuilder.build());
 
-                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                        /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                         mBuilder.setSmallIcon(R.drawable.icon);
                         mBuilder.setContentTitle("Alert");
                         mBuilder.setContentText("Suspect is located within your viccinity");
@@ -101,6 +101,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
                         // notificationID allows you to update the notification later on.
                         mNotificationManager.notify(35, mBuilder.build());
+                        */
 
                     }
 
@@ -153,5 +154,21 @@ public class LocationUpdaterService extends Service implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alerts";
+            String description = "Shows alerts";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

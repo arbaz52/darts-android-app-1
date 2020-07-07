@@ -52,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseDatabase fd;
     DatabaseReference dbref, alertref;
     HashMap<String, Location> locations;
+    String qrLat, qrLong;
 
     String myID;
     boolean haveZoomed = false;
@@ -67,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent x = new Intent(this, AlertInfoActivity.class);
         startActivity(x);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
@@ -205,9 +207,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+        Intent qrUnitIntent=getIntent();
+        qrLat=qrUnitIntent.getStringExtra("lat");
+        qrLong=qrUnitIntent.getStringExtra("long");
+        show_specific(qrLat, qrLong);
 
 
 
+    }
+
+    public void show_specific(String lat, String longt){
+        if(mMap != null &&
+                locations.size() != 0) {
+
+            LatLng position = new LatLng(Float.parseFloat(lat), Float.parseFloat(longt));
+
+            mMap.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                            CameraPosition.builder().
+                                    target(position).
+                                    zoom(19.0f).
+                                    build()));
+        }
     }
 
 
@@ -240,6 +261,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(position)
                         .title(entry.getKey())
+
                 );
                 marker.showInfoWindow();
                 markers.add(marker);

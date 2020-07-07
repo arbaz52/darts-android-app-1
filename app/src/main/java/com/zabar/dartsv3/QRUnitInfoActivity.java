@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 
 public class QRUnitInfoActivity extends AppCompatActivity {
 
+    Button message, map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,5 +49,25 @@ public class QRUnitInfoActivity extends AppCompatActivity {
         rvMembers.setLayoutManager(lm);
         MembersAdapter ma = new MembersAdapter(this, qrunit.members);
         rvMembers.setAdapter(ma);
+
+        message=findViewById(R.id.btnMessage);
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent messageIntent=new Intent(QRUnitInfoActivity.this, MessageActivity.class);
+                messageIntent.putExtra("ID", qrunit.ID);
+                startActivity(messageIntent);
+            }
+        });
+        map=findViewById(R.id.btnShowOnMap);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent=new Intent(QRUnitInfoActivity.this, MapsActivity.class);
+                mapIntent.putExtra("lat",qrunit.latitude);
+                mapIntent.putExtra("long", qrunit.longitude);
+                startActivity(mapIntent);
+            }
+        });
     }
 }
