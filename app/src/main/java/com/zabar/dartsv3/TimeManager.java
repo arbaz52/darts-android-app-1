@@ -1,6 +1,8 @@
 package com.zabar.dartsv3;
 
+import java.util.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class TimeManager {
     public static String difference(Timestamp latest, Timestamp oldest){
@@ -31,4 +33,20 @@ public class TimeManager {
         difference += "ago";
         return difference;
     }
+
+
+    public static Date parse(String date){
+
+        try{
+            String format = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'";
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            Date d = sdf.parse(date);
+            return d;
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+
+        return null;
+    }
+
 }

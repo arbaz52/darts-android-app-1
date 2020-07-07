@@ -74,12 +74,12 @@ public class LocationUpdaterService extends Service implements LocationListener 
                         for(DataSnapshot tag: item_snapshot.child("suspect").child("tags").getChildren()){
                                 tags.add(tag.getValue().toString());
                         }
-                        Suspect suspect=new Suspect(fullname, gender, pictures, tags);
+                        //Suspect suspect=new Suspect(fullname, gender, pictures, tags);
                         frame=item_snapshot.child("frame_url").getValue().toString();
                         longtitude=item_snapshot.child("location").child("longitude").getValue().toString();
                         latitude=item_snapshot.child("location").child("latitude").getValue().toString();
                         com.zabar.dartsv3.Location location=new com.zabar.dartsv3.Location(latitude, longtitude);
-                        Alert alert=new Alert(alertID, frame, location, suspect);
+                        //Alert alert=new Alert(alertID, frame, location, suspect);
 
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                         mBuilder.setSmallIcon(R.drawable.icon);

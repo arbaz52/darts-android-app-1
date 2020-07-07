@@ -65,6 +65,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
 
+        Intent x = new Intent(this, AlertInfoActivity.class);
+        startActivity(x);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -121,12 +124,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             for(DataSnapshot tag: item_snapshot.child("suspect").child("tags").getChildren()){
                                 tags.add(tag.getValue().toString());
                             }
-                            Suspect suspect=new Suspect(fullname, gender, pictures, tags);
+                            //Suspect suspect=new Suspect(fullname, gender, pictures, tags);
                             frame=item_snapshot.child("frame").getValue().toString();
                             longtitude=item_snapshot.child("location").child("longitude").getValue().toString();
                             latitude=item_snapshot.child("location").child("latitude").getValue().toString();
                             com.zabar.dartsv3.Location location=new com.zabar.dartsv3.Location(latitude, longtitude);
-                            alert=new Alert(alertID, frame, location, suspect);
+                            //alert=new Alert(alertID, frame, location, suspect);
 
                             break;
 
@@ -247,7 +250,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(alert != null) {
                     Toast.makeText(this, "Displaying you this location", Toast.LENGTH_SHORT).show();
                     // Add a marker in Sydney and move the camera
-                    LatLng loc = new LatLng(alert.location.latitude, alert.location.longitude);
+                    //LatLng loc = new LatLng(alert.location.latitude, alert.location.longitude);
+                    /*
                     mMap.addMarker(new MarkerOptions().position(loc).title("Suspect detected")).showInfoWindow();
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
                     mMap.animateCamera(
@@ -256,6 +260,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             target(loc).
                                             zoom(17.0f).
                                             build()));
+                                            */
                 }else {
                     where_am_I();
                 }
