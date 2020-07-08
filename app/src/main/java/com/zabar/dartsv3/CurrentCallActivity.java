@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.calling.Call;
@@ -16,7 +17,9 @@ import com.sinch.android.rtc.calling.CallListener;
 import java.util.List;
 
 public class CurrentCallActivity extends AppCompatActivity implements CallListener {
-
+    public static final String STATUS = "status";
+    public static final String STATUS_CALLING = "calling";
+    public static final String CALLER_ID = "callerid";
     String status;
     Call call;
     String callId;
@@ -46,8 +49,8 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
                 decline.setVisibility(View.VISIBLE);
                 hangup.setVisibility(View.GONE);
                 break;
-            case "calling":
-                callerId=intent.getStringExtra("callerId");
+            case STATUS_CALLING:
+                callerId=intent.getStringExtra(CALLER_ID);
                 call=App.callClient.callUser(callerId);
                 accept.setVisibility(View.GONE);
                 decline.setVisibility(View.GONE);
@@ -100,12 +103,17 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
     @Override
     public void onCallEnded(Call call) {
-        Intent i=new Intent(this, MapsActivity.class);
-        startActivity(i);
+        //Intent i=new Intent(this, MapsActivity.class);
+        //startActivity(i);
+        Toast.makeText(this, "Call ended!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShouldSendPushNotification(Call call, List<PushPair> list) {
 
     }
+
+
+
+
 }

@@ -69,5 +69,19 @@ public class QRUnitInfoActivity extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });
+
+
+
+
+        Button btnCall = findViewById(R.id.btnCall);
+        btnCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(QRUnitInfoActivity.this, CurrentCallActivity.class);
+                i.putExtra(CurrentCallActivity.STATUS, CurrentCallActivity.STATUS_CALLING);
+                i.putExtra(CurrentCallActivity.CALLER_ID, qrunit.ID);
+                startActivity(i);
+            }
+        });
     }
 }

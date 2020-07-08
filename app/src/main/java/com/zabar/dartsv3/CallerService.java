@@ -23,6 +23,7 @@ import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallListener;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -56,7 +57,16 @@ public class CallerService extends Service implements CallClientListener {
         int r = super.onStartCommand(intent, flags, startId);
         String TAG="KANWAL";
         Log.d(TAG, "onStartCommand: waiting for sinch client");
-        while(App.sinchClient == null);
+        while (App.sinchClient == null) {
+            try {
+                    SharedPreferences sd = getApplicationContext().getSharedPreferences("authInfo", 0);
+                    String myID = sd.getString("myID", "");
+                    Log.d(TAG, "onStartCommand: sinch server is null");
+                    App.sinchClient = Caller.getSinchClient(getApplicationContext(), myID);
+            }catch(Exception ex){
+                Log.d(TAG, "onStartCommand: "+ ex.toString());
+            }
+        }
         Log.d(TAG, "onStartCommand: sinch client has been created");
         App.sinchClient.addSinchClientListener(new SinchClientListener() {
             public void onClientStarted(SinchClient client) {
