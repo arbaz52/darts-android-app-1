@@ -3,6 +3,7 @@ package com.zabar.dartsv3;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -85,8 +86,10 @@ public class AlertInfoActivity extends AppCompatActivity implements Response.Lis
             }
         });
 
-        String alertId = "5f036297d2b69d25c86d3a59";
-
+        //String alertId = "5f036297d2b69d25c86d3a59";
+        Intent intent = getIntent();
+        String alertId = intent.getStringExtra("_id");
+        Toast.makeText(this, alertId, Toast.LENGTH_SHORT).show();
         SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
         String key=sp.getString("myID","");
         myID = key;

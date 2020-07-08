@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class ServerConnect_QR extends AsyncTask<String, String, String> {
-    public static final String SERVER_IP="http://192.168.0.100:3000";
+    public static final String SERVER_IP=Server.getUrl();
     Context context;
     String myID;
     public ServerConnect_QR(Context context, String myID){

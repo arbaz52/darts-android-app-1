@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -41,6 +43,9 @@ public class LocationUpdaterService extends Service implements LocationListener 
     DatabaseReference dbref;
     DatabaseReference alertref;
     ArrayList<String> AlertsHandled=new ArrayList<>();
+
+    com.zabar.dartsv3.Location location;
+
     public LocationUpdaterService() {
     }
 
@@ -62,47 +67,28 @@ public class LocationUpdaterService extends Service implements LocationListener 
                 String  alertID;
 
                 for(DataSnapshot item_snapshot:dataSnapshot.getChildren()) {
-                    alertID=item_snapshot.getKey().toString();
+                    alertID=item_snapshot.child("alertId").getValue().toString();
                     if(AlertsHandled == null || !AlertsHandled.contains(alertID)){
                         AlertsHandled.add(alertID);
 
-                        createNotificationChannel();
-                        Intent alertIntent=new Intent(getApplicationContext(), MapsActivity.class);
-                        alertIntent.putExtra("Alert", alertID);
-                        alertIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, alertIntent, 0);
+                        String suspectName, time;
+                        String current_time = (new Date(Calendar.getInstance().getTimeInMillis())).toString();
+                        com.zabar.dartsv3.Location qrunitLocation, alertLocation;
 
-                        mBuilder= new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                                .setSmallIcon(R.drawable.icon)
-                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                .setContentTitle("Alert")
-                                .setContentText("Suspect is caught on camera")
-                                .setContentIntent(pendingIntent);
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                        notificationManager.notify(1, mBuilder.build());
+                        suspectName = item_snapshot.hasChild("suspect") ? item_snapshot.child("suspect").child("fullName").getValue().toString() : "Unknown suspect";
+                        time = item_snapshot.hasChild("time") ? item_snapshot.child("time").getValue().toString() : current_time;
+                        if(item_snapshot.hasChild("location")){
+                            alertLocation = new com.zabar.dartsv3.Location(
+                                    item_snapshot.child("location").child("latitude").getValue().toString(),
+                                    item_snapshot.child("location").child("longitude").getValue().toString()
+                                    );
+                        }else{
+                            alertLocation = null;
+                        }
+                        qrunitLocation = LocationUpdaterService.this.location;
 
-                        /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-                        mBuilder.setSmallIcon(R.drawable.icon);
-                        mBuilder.setContentTitle("Alert");
-                        mBuilder.setContentText("Suspect is located within your viccinity");
 
-                        Intent resultIntent = new Intent(getApplicationContext(), MapsActivity.class);
-                        resultIntent.putExtra("Alert", alertID);
-                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                        stackBuilder.addParentStack(MapsActivity.class);
-
-                        // Adds the Intent that starts the Activity to the top of the stack
-                        stackBuilder.addNextIntent(resultIntent);
-                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
-
-                        mBuilder.setContentIntent(resultPendingIntent);
-
-                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                        // notificationID allows you to update the notification later on.
-                        mNotificationManager.notify(35, mBuilder.build());
-                        */
-
+                        NotifManager.createAlertNotification(getApplicationContext(), alertID, suspectName, qrunitLocation, alertLocation, time);
                     }
 
                 }
@@ -134,6 +120,8 @@ public class LocationUpdaterService extends Service implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         if(dbref != null){
+            this.location = new com.zabar.dartsv3.Location(location.getLatitude()+"", location.getLongitude()+"");
+
             Log.d("KANWAL", "onLocationChanged: " + location.getLongitude()+","+location.getLatitude()+":");
             DatabaseReference temp = dbref.child(myID);
             temp.child("latitude").setValue(location.getLatitude());
@@ -156,19 +144,4 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Alerts";
-            String description = "Shows alerts";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 }
