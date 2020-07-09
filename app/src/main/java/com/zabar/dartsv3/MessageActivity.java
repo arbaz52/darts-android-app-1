@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MessageActivity extends AppCompatActivity {
-
+    public static final String KEY_QRUNIT_ID = "ID";
 
     String ID;
     EditText message;
@@ -48,7 +48,7 @@ public class MessageActivity extends AppCompatActivity {
         sender=sp.getString("myID", "not logged in");
 
         Intent intent=getIntent();
-        ID=intent.getStringExtra("ID");
+        ID=intent.getStringExtra(KEY_QRUNIT_ID);
         recvr = ID;
 
 

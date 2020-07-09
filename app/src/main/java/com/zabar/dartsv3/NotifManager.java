@@ -8,13 +8,17 @@ import android.os.Build;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class NotifManager {
+
+
     public static int totalNotifications = 0;
     public static final String CHANNEL_ID = "1";
 
@@ -52,6 +56,42 @@ public class NotifManager {
         notificationManager.notify(totalNotifications, mBuilder.build());
         return totalNotifications;
     }
+
+
+
+
+
+    public static int createMessageNotification(Context context, String messageId, QRUnit sender, String message, Timestamp time){
+
+        totalNotifications += 1;
+
+        NotificationCompat.Builder mBuilder;
+        Intent messageIntent=new Intent(context, MessageActivity.class);
+        messageIntent.putExtra(MessageActivity.KEY_QRUNIT_ID, sender.ID);
+        messageIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, totalNotifications, messageIntent, 0);
+
+        String diff = TimeManager.difference(
+                new Timestamp(Calendar.getInstance().getTimeInMillis()),
+                time);
+
+        //add time too
+        String d = message;
+
+        mBuilder= new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentTitle("Message from " + sender.name + " " + diff)
+                .setContentText(d)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(d))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(totalNotifications, mBuilder.build());
+        return totalNotifications;
+    }
+
 
     public static void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because

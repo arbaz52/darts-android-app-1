@@ -20,18 +20,28 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -43,6 +53,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
     DatabaseReference dbref;
     DatabaseReference alertref;
     ArrayList<String> AlertsHandled=new ArrayList<>();
+    ArrayList<String> messagesHandled = new ArrayList<>();
 
     com.zabar.dartsv3.Location location;
 
@@ -108,6 +119,99 @@ public class LocationUpdaterService extends Service implements LocationListener 
             }
         }
         lmg.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, Criteria.ACCURACY_FINE, this);
+
+
+        DatabaseReference msgRef = fd.getReference("Messages");
+        msgRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    //make message object
+                    String id, content;
+                    QRUnit sndr, recvr;
+                    Timestamp time;
+
+                    Message msg;
+
+                    id = ds.getKey();
+                    if(!ds.hasChild("message")
+                            || !ds.hasChild("sndr")
+                            || !ds.hasChild("recvr")
+                            || !ds.hasChild("time")){
+                        continue;
+                    }
+
+                    content = ds.child("message").getValue().toString();
+                    String sndrId, recvrId;
+                    sndrId = ds.child("sndr").getValue().toString();
+                    recvrId = ds.child("recvr").getValue().toString();
+
+                    time = Timestamp.valueOf(ds.child("time").getValue().toString());
+
+                    //check if it's for you i.e. recvr is you
+                    if(!recvrId.equals(myID)){
+                       continue;
+                    }
+
+                    //check if it's handled
+                    boolean handled = false;
+                    for(String _id: messagesHandled) {
+                        if (_id.equals(id)) {
+                            handled = true;
+                            break;
+                        }
+                    }
+                    if(handled)
+                        continue;
+
+
+
+
+                    //if not, display notification and add to handled, else miss.
+                    String url = Server.getUrl() + "/qrunit/"+myID+"/qrunits/"+sndrId;
+                    JsonObjectRequest jor = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                if (response.has("err")) {
+                                    Toast.makeText(getApplicationContext(),
+                                            response.getJSONObject("err").getString("message"),
+                                            Toast.LENGTH_SHORT).show();
+                                }else if(response.has("succ")){
+                                    QRUnit sndr = QRUnit.fromJSONObject(response.getJSONObject("qrunit"));
+                                    //add to handled
+                                    messagesHandled.add(id);
+                                    NotifManager.createMessageNotification(getApplicationContext(),
+                                            id,
+                                            sndr,
+                                            content,
+                                            time);
+                                }
+                            }catch(Exception ex){
+                                Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                    queue.add(jor);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
         return START_STICKY;
     }
 
