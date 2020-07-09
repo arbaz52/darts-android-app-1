@@ -6,8 +6,12 @@ import java.text.SimpleDateFormat;
 
 public class TimeManager {
     public static String difference(Timestamp latest, Timestamp oldest){
-        String difference = "";
         long milis = latest.getTime() - oldest.getTime();
+        return format_diff(milis);
+    }
+
+    public static String format_diff(long milis){
+        String difference = "";
         long seconds = milis/1000;
         long minutes = seconds / 60;
         long hours = minutes / 60;

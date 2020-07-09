@@ -121,7 +121,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
     public void onLocationChanged(Location location) {
         if(dbref != null){
             this.location = new com.zabar.dartsv3.Location(location.getLatitude()+"", location.getLongitude()+"");
-
+            App.myLocation = this.location;
             Log.d("KANWAL", "onLocationChanged: " + location.getLongitude()+","+location.getLatitude()+":");
             DatabaseReference temp = dbref.child(myID);
             temp.child("latitude").setValue(location.getLatitude());

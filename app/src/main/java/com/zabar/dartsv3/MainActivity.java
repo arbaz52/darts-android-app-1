@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
-                startActivityForResult(intent, QR_CODE_RESULT);
+                //startActivityForResult(intent, QR_CODE_RESULT);
+                dirtyLogin("5ef225f06226a01148c0aba2");
             }
         });
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    */
     private void dirtyLogin(String id){
         SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
         SharedPreferences.Editor spe=sp.edit();
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intentTPL=new Intent(MainActivity.this, MapsActivity.class);
         startActivity(intentTPL);
     }
-    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

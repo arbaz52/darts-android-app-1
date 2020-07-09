@@ -16,6 +16,8 @@ public class App extends Application {
     public static CallClient callClient;
     public static String myID;
 
+    public static Location myLocation = null;
+
     @Override
     public void onCreate() {
         super.onCreate();
