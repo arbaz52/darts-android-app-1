@@ -32,14 +32,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.gson.Gson;
+import com.sinch.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -52,7 +57,12 @@ public class LocationUpdaterService extends Service implements LocationListener 
     FirebaseDatabase fd;
     DatabaseReference dbref;
     DatabaseReference alertref;
+    SharedPreferences sd;
+
     ArrayList<String> AlertsHandled=new ArrayList<>();
+
+    public static final int NOTIFICATION_TIME_THRESH = 60;
+
     ArrayList<String> messagesHandled = new ArrayList<>();
 
     com.zabar.dartsv3.Location location;
@@ -65,10 +75,38 @@ public class LocationUpdaterService extends Service implements LocationListener 
         super.onStartCommand(intent, flags, startId);
         Log.d("KANWAL", "onStartCommand: working");
 
-        SharedPreferences sd = this.getSharedPreferences("authInfo", 0);
+        sd = this.getSharedPreferences("authInfo", 0);
         myID =  sd.getString("myID", "");
         if(myID.equals(""))
             return START_NOT_STICKY;
+
+
+        //now
+        //load the ids of the messageshandled
+        String messagesHandledRaw = sd.getString("messagesHandled", "");
+        if(!messagesHandledRaw.equals("")){
+            Type type = new TypeToken<List<String>>() {
+            }.getType();
+            Gson gson = new Gson();
+            List<String> arrPackageData = gson.fromJson(messagesHandledRaw, type);
+            for(String data:arrPackageData) {
+                messagesHandled.add(data);
+            }
+        }
+
+        //now
+        //load the ids of the Alertshandled
+        String AlertsHandledRaw = sd.getString("AlertsHandled", "");
+        if(!AlertsHandledRaw.equals("")){
+            Type type = new TypeToken<List<String>>() {
+            }.getType();
+            Gson gson = new Gson();
+            List<String> arrPackageData = gson.fromJson(AlertsHandledRaw, type);
+            for(String data:arrPackageData) {
+                AlertsHandled.add(data);
+            }
+        }
+
 
         fd = FirebaseDatabase.getInstance();
         alertref=fd.getReference("Alerts");
@@ -80,7 +118,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                 for(DataSnapshot item_snapshot:dataSnapshot.getChildren()) {
                     alertID=item_snapshot.child("alertId").getValue().toString();
                     if(AlertsHandled == null || !AlertsHandled.contains(alertID)){
-                        AlertsHandled.add(alertID);
+                        notificationForAlertHandled(alertID);
 
                         String suspectName, time;
                         String current_time = (new Date(Calendar.getInstance().getTimeInMillis())).toString();
@@ -110,17 +148,6 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
             }
         });
-        dbref = fd.getReference("locations");
-        Context c = getApplicationContext();
-        LocationManager lmg = (LocationManager) ((Context) c).getSystemService(LOCATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return START_NOT_STICKY;
-            }
-        }
-        lmg.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, Criteria.ACCURACY_FINE, this);
-
-
         DatabaseReference msgRef = fd.getReference("Messages");
         msgRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -153,6 +180,13 @@ public class LocationUpdaterService extends Service implements LocationListener 
                        continue;
                     }
 
+                    //check if it's recent enough to be notified.
+                    /*
+                    long diff = (Calendar.getInstance().getTimeInMillis() - time.getTime()) / 1000;
+                    if(diff > NOTIFICATION_TIME_THRESH)
+                        continue;
+                    */
+
                     //check if it's handled
                     boolean handled = false;
                     for(String _id: messagesHandled) {
@@ -180,7 +214,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                                 }else if(response.has("succ")){
                                     QRUnit sndr = QRUnit.fromJSONObject(response.getJSONObject("qrunit"));
                                     //add to handled
-                                    messagesHandled.add(id);
+                                    notificationForMessageHandled(id);
                                     NotifManager.createMessageNotification(getApplicationContext(),
                                             id,
                                             sndr,
@@ -209,6 +243,21 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
             }
         });
+
+
+
+
+        dbref = fd.getReference("locations");
+        Context c = getApplicationContext();
+        LocationManager lmg = (LocationManager) ((Context) c).getSystemService(LOCATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return START_NOT_STICKY;
+            }
+        }
+        lmg.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10, Criteria.ACCURACY_FINE, this);
+
+
 
 
 
@@ -248,4 +297,24 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
     }
 
+
+
+    public void notificationForMessageHandled(String messageId){
+        messagesHandled.add(messageId);
+        SharedPreferences.Editor spe= sd.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(messagesHandled);
+        spe.putString("messagesHandled", json);
+        spe.commit();
+
+    }
+
+    public void notificationForAlertHandled(String alertId){
+        AlertsHandled.add(alertId);
+        SharedPreferences.Editor spe= sd.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(AlertsHandled);
+        spe.putString("AlertsHandled", json);
+        spe.commit();
+    }
 }

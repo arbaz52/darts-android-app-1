@@ -221,6 +221,7 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
         decline.setVisibility(View.GONE);
         hangup.setVisibility(View.GONE);
+        accept.setVisibility(View.GONE);
 
         //stop updateui thread
         stopUpdateUiThread();
