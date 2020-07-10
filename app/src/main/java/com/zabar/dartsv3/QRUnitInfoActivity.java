@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class QRUnitInfoActivity extends AppCompatActivity {
+    public static final String KEY_QRUNIT_ID = "_id";
 
     Button message, map;
     @Override
@@ -31,7 +32,7 @@ public class QRUnitInfoActivity extends AppCompatActivity {
         ab.setSubtitle("About this QRUnit");
 
         Intent in = getIntent();
-        String _id = in.getStringExtra("_id");
+        String _id = in.getStringExtra(KEY_QRUNIT_ID);
         ArrayList<QRUnit> qrunits = QRUnit.getQRUnits(this);
         QRUnit qrunit = QRUnit.getQRUnit(qrunits, _id);
 

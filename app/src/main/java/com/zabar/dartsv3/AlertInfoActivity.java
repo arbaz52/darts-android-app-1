@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class AlertInfoActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
+    public static final String KEY_ALERT_ID = "_id";
+
     String myID;
     Alert alert = null;
 
@@ -88,7 +90,7 @@ public class AlertInfoActivity extends AppCompatActivity implements Response.Lis
 
         //String alertId = "5f036297d2b69d25c86d3a59";
         Intent intent = getIntent();
-        String alertId = intent.getStringExtra("_id");
+        String alertId = intent.getStringExtra(KEY_ALERT_ID);
         Toast.makeText(this, alertId, Toast.LENGTH_SHORT).show();
         SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
         String key=sp.getString("myID","");
