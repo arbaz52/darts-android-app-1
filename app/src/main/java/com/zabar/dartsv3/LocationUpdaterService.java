@@ -166,6 +166,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                             spe.putString("myID", "");
                             spe.commit();
                             Intent i=new Intent(getApplicationContext(), MainActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                             Toast.makeText(LocationUpdaterService.this, "You have been logged out", Toast.LENGTH_SHORT).show();
 
