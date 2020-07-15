@@ -74,7 +74,7 @@ public class ServerConnect extends AsyncTask<String, String, String> {
                 JSONObject reader = new JSONObject(s);
                 if (reader.has("err")){
                     String error_msg=reader.getJSONObject("err").getString("message");
-                    Toast.makeText(this.context, error_msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.context, error_msg + "Inserverconnect", Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(this.context, MainActivity.class);
                     this.context.startActivity(intent);
                 }

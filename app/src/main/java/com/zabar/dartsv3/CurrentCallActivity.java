@@ -97,12 +97,14 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
                 break;
             case "ongoing":
                 callId=intent.getStringExtra("callId");
-                call=App.callClient.callUser(callerId);
+                call=App.currentCall;
+                callerId=call.getRemoteUserId();
                 accept.setVisibility(View.GONE);
                 decline.setVisibility(View.GONE);
                 hangup.setVisibility(View.VISIBLE);
                 tvDuration.setVisibility(View.VISIBLE);
                 displaystatus.setText("Connected");
+                startUpdateUiThread();
                 break;
         }
         if(call!=null){
@@ -197,6 +199,7 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
     @Override
     public void onCallEstablished(Call call) {
+        App.currentCall = call;
         displaystatus.setText("Connected");
         accept.setVisibility(View.GONE);
         decline.setVisibility(View.GONE);
@@ -207,6 +210,7 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
         //start the update ui thread
         startUpdateUiThread();
+        NotifManager.createCallNotification(CurrentCallActivity.this, callId);
     }
 
     @Override
@@ -225,6 +229,7 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
         //stop updateui thread
         stopUpdateUiThread();
+        NotifManager.cancel(CurrentCallActivity.this);
     }
 
     @Override
@@ -245,9 +250,9 @@ public class CurrentCallActivity extends AppCompatActivity implements CallListen
 
         try {
             if(response.has("err")){
-                Toast.makeText(this, response.getJSONObject("err").getString("message"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, response.getJSONObject("err").getString("message") + "Incurrentcall", Toast.LENGTH_SHORT).show();
             }else if(response.has("succ")){
-                Toast.makeText(this, response.getJSONObject("succ").getString("message"), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, response.getJSONObject("succ").getString("message"), Toast.LENGTH_SHORT).show();
                 qrunit = QRUnit.fromJSONObject(response.getJSONObject("qrunit"));
                 updateFront();
             }

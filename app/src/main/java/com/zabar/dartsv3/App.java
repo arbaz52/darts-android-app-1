@@ -9,13 +9,14 @@ import android.os.IBinder;
 
 import com.sinch.android.rtc.Sinch;
 import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallClient;
 
 public class App extends Application {
     public static SinchClient sinchClient;
     public static CallClient callClient;
     public static String myID;
-
+    public static Call currentCall;
     public static Location myLocation = null;
 
     @Override

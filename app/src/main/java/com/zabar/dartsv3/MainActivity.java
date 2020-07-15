@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
-                //startActivityForResult(intent, QR_CODE_RESULT);
-                dirtyLogin("5ef225f06226a01148c0aba2");
+                startActivityForResult(intent, QR_CODE_RESULT);
+                //dirtyLogin("5f0a1c4ecdb7840017a3831e");
             }
         });
 

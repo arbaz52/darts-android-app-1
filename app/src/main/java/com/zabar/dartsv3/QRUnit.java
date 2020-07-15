@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +64,7 @@ public class QRUnit {
         String key=sp.getString("myID","");
         ServerConnect_QR serverQR=new ServerConnect_QR(context,key);
         serverQR.execute();
+
 
         String unitString=sp.getString("units_array","");
         try {

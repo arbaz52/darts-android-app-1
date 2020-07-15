@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,22 +20,33 @@ import java.util.ArrayList;
 public class QRUnitInfoActivity extends AppCompatActivity {
     public static final String KEY_QRUNIT_ID = "_id";
 
-    Button message, map;
+    Button message, map, btnCall;
+    String my_ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrunit_info);
 
 
+        SharedPreferences sp=getSharedPreferences("authInfo", 0);
+        my_ID=sp.getString("myID", "not logged in");
+
 
         ActionBar ab = getSupportActionBar();
         ab.setTitle("QRUnit");
-        ab.setSubtitle("About this QRUnit");
+
 
         Intent in = getIntent();
         String _id = in.getStringExtra(KEY_QRUNIT_ID);
+        if(_id.equals(my_ID)){
+            ab.setSubtitle("Your profile");
+        }
+        else{
+            ab.setSubtitle("About this QRUnit");
+        }
         ArrayList<QRUnit> qrunits = QRUnit.getQRUnits(this);
         QRUnit qrunit = QRUnit.getQRUnit(qrunits, _id);
+
 
 
         TextView tvName, tvheadingMembers;
@@ -50,16 +62,39 @@ public class QRUnitInfoActivity extends AppCompatActivity {
         rvMembers.setLayoutManager(lm);
         MembersAdapter ma = new MembersAdapter(this, qrunit.members);
         rvMembers.setAdapter(ma);
-
         message=findViewById(R.id.btnMessage);
-        message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent messageIntent=new Intent(QRUnitInfoActivity.this, MessageActivity.class);
-                messageIntent.putExtra("ID", qrunit.ID);
-                startActivity(messageIntent);
-            }
-        });
+        btnCall = findViewById(R.id.btnCall);
+
+        if(_id.equals(my_ID)){
+            message.setVisibility(View.GONE);
+            btnCall.setVisibility(View.GONE);
+
+        }
+        else{
+
+            message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent messageIntent=new Intent(QRUnitInfoActivity.this, MessageActivity.class);
+                    messageIntent.putExtra("ID", qrunit.ID);
+                    startActivity(messageIntent);
+                }
+            });
+
+
+            btnCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(QRUnitInfoActivity.this, CurrentCallActivity.class);
+                    i.putExtra(CurrentCallActivity.STATUS, CurrentCallActivity.STATUS_CALLING);
+                    i.putExtra(CurrentCallActivity.CALLER_ID, qrunit.ID);
+                    startActivity(i);
+                }
+            });
+
+        }
+
+
         map=findViewById(R.id.btnShowOnMap);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,15 +109,6 @@ public class QRUnitInfoActivity extends AppCompatActivity {
 
 
 
-        Button btnCall = findViewById(R.id.btnCall);
-        btnCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(QRUnitInfoActivity.this, CurrentCallActivity.class);
-                i.putExtra(CurrentCallActivity.STATUS, CurrentCallActivity.STATUS_CALLING);
-                i.putExtra(CurrentCallActivity.CALLER_ID, qrunit.ID);
-                startActivity(i);
-            }
-        });
+
     }
 }

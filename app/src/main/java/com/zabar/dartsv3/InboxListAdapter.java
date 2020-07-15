@@ -63,6 +63,7 @@ public class InboxListAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         View view;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.list_inbox_entry, parent, false);
@@ -94,7 +95,7 @@ public class InboxListAdapter implements ListAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return getCount() < 1 ? 1: getCount();
+        return 1;
     }
 
     @Override

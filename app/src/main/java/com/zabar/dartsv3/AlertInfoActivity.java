@@ -118,14 +118,14 @@ public class AlertInfoActivity extends AppCompatActivity implements Response.Lis
     public void onResponse(JSONObject response) {
         try {
             if(response.has("err")){
-                Toast.makeText(this, response.getJSONObject("err").getString("message"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, response.getJSONObject("err").getString("message") + "Inalertinfo", Toast.LENGTH_SHORT).show();
                 if(response.has("alert")){
                     Alert alert = Alert.fromJSONObject(response.getJSONObject("alert"));
                     this.alert = alert;
                     updateFront();
                 }
             }else if(response.has("succ")){
-                Toast.makeText(this, response.getJSONObject("succ").getString("message"), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, response.getJSONObject("succ").getString("message"), Toast.LENGTH_SHORT).show();
                 Alert alert = Alert.fromJSONObject(response.getJSONObject("alert"));
                 this.alert = alert;
                 updateFront();

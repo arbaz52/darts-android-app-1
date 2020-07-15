@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseDatabase fd;
     DatabaseReference dbref, alertref;
     HashMap<String, Location> locations;
-    String qrLat, qrLong;
+    String qrLat_passed, qrLong_passed;
 
     String myID;
     boolean haveZoomed = false;
@@ -116,6 +116,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 where_am_I();
+            }
+        });
+
+        FloatingActionButton my_Profile=findViewById(R.id.my_icon);
+        my_Profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MapsActivity.this, QRUnitInfoActivity.class);
+                SharedPreferences sp=getSharedPreferences("authInfo", 0);
+                String my_ID=sp.getString("myID", "not logged in");
+                i.putExtra("_id", my_ID);
+                startActivity(i);
             }
         });
 
@@ -194,17 +206,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent callerService = new Intent(this, CallerService.class);
         startService(callerService);
 
-        bindService(callerService, this, BIND_AUTO_CREATE);
+        //bindService(callerService, this, BIND_AUTO_CREATE);
+
+
+
 
 
     }
 
+
+
+
     public void show_specific(String lat, String longt){
         if(mMap != null &&
-                locations.size() != 0) {
+                lat != null && longt !=null) {
 
             LatLng position = new LatLng(Float.parseFloat(lat), Float.parseFloat(longt));
 
+            haveZoomed=true;
             mMap.animateCamera(
                     CameraUpdateFactory.newCameraPosition(
                             CameraPosition.builder().
@@ -301,6 +320,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+        Intent qrunitIntent=getIntent();
+        qrLat_passed=qrunitIntent.getStringExtra("lat");
+        qrLong_passed=qrunitIntent.getStringExtra("longt");
+        show_specific(qrLat_passed, qrLong_passed);
         qrunitsOnMap();
         alertsOnMap();
     }
@@ -389,6 +413,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(qrunits.containsKey(qrunitId)){
             QRUnit qrunit = qrunits.get(qrunitId);
+            if(!haveZoomed && qrunitId.equals(myID)){
+                haveZoomed=true;
+                show_specific(qrunit.latitude, qrunit.longitude);
+            }
             LatLng location = new LatLng(
                     Double.parseDouble(qrunit.latitude),
                     Double.parseDouble(qrunit.longitude)
@@ -594,7 +622,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onResponse(JSONObject response) {
                 try {
                     if (response.has("error")) {
-                        Toast.makeText(MapsActivity.this, response.getString("error"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MapsActivity.this, response.getString("error") + "inMapsactivity1", Toast.LENGTH_SHORT).show();
                     }else if (response.has("p")){
                         JSONArray ja = response.getJSONArray("p");
                         if(ja.length() > 0){
@@ -621,13 +649,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 }catch(Exception ex){
-                    Toast.makeText(MapsActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this, ex.toString() + "inMapsactivity2", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MapsActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, error.toString() + "inMapsactivity3", Toast.LENGTH_SHORT).show();
             }
         });
 

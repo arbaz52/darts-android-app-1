@@ -20,6 +20,7 @@ public class NotifManager {
 
 
     public static int totalNotifications = 0;
+    public static int callNotificationID=65535;
     public static final String CHANNEL_ID = "1";
 
 
@@ -93,6 +94,32 @@ public class NotifManager {
     }
 
 
+    public static int createCallNotification(Context context, String callID){
+
+        NotificationCompat.Builder mBuilder;
+        Intent callIntent=new Intent(context.getApplicationContext(), CurrentCallActivity.class);
+        callIntent.putExtra("callId",callID);
+        callIntent.putExtra("status", "ongoing");
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, callNotificationID, callIntent, 0);
+
+
+        mBuilder= new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentTitle("Ongoing Call")
+                .setContentText("Click to return to call")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Click to return to call"))
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setAutoCancel(false);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(callNotificationID, mBuilder.build());
+        return callNotificationID;
+    }
+
     public static void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -108,4 +135,10 @@ public class NotifManager {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+    public static void cancel(Context context){
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(callNotificationID);
+    }
+
 }

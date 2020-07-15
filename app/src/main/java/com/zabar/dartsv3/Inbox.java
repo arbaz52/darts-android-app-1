@@ -14,6 +14,13 @@ public class Inbox {
     public boolean addToInbox(Message msg){
         boolean shouldAdd = true;
 
+        if(msg==null){
+            return false;
+        }
+
+        if(msg.recvr==null || msg.sndr==null){
+            return false;
+        }
         if(!msg.recvr.ID.equals(this.myID) && !msg.sndr.ID.equals(this.myID))
             return false;
 

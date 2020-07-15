@@ -58,6 +58,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
     DatabaseReference dbref;
     DatabaseReference alertref;
     SharedPreferences sd;
+    DatabaseReference logoutref;
 
     ArrayList<String> AlertsHandled=new ArrayList<>();
 
@@ -148,6 +149,39 @@ public class LocationUpdaterService extends Service implements LocationListener 
 
             }
         });
+
+        fd = FirebaseDatabase.getInstance();
+        logoutref=fd.getReference("forcelogout");
+        logoutref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String unitID;
+
+                for (DataSnapshot item_snapshot : dataSnapshot.getChildren()) {
+                    unitID = item_snapshot.getKey();
+                    if(unitID.equals(myID)){
+                        {
+                            SharedPreferences sp= getApplicationContext().getSharedPreferences("authInfo",0 );
+                            SharedPreferences.Editor spe=sp.edit();
+                            spe.putString("myID", "");
+                            spe.commit();
+                            Intent i=new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(i);
+                            Toast.makeText(LocationUpdaterService.this, "You have been logged out", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
         DatabaseReference msgRef = fd.getReference("Messages");
         msgRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -209,7 +243,7 @@ public class LocationUpdaterService extends Service implements LocationListener 
                             try {
                                 if (response.has("err")) {
                                     Toast.makeText(getApplicationContext(),
-                                            response.getJSONObject("err").getString("message"),
+                                            response.getJSONObject("err").getString("message") + "InLocationUpdater1",
                                             Toast.LENGTH_SHORT).show();
                                 }else if(response.has("succ")){
                                     QRUnit sndr = QRUnit.fromJSONObject(response.getJSONObject("qrunit"));
@@ -222,13 +256,13 @@ public class LocationUpdaterService extends Service implements LocationListener 
                                             time);
                                 }
                             }catch(Exception ex){
-                                Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), ex.toString() + "InLocationUpdater2", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), error.toString() + "InLocationUpdater3", Toast.LENGTH_SHORT).show();
                         }
                     });
 

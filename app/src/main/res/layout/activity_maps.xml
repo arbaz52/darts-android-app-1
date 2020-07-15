@@ -18,15 +18,15 @@
     />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/map_icon"
+        android:id="@+id/my_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/maps"
-        app:backgroundTint="@color/red"
+        android:src="@drawable/user"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -36,11 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/inbox"
-        app:backgroundTint="@color/red"
-        app:layout_constraintBottom_toTopOf="@+id/map_icon"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/my_icon"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -52,7 +52,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/people"
-        app:backgroundTint="@color/red"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/inbox_icon"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -65,7 +65,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/location"
-        app:backgroundTint="@color/red"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/units_icon"
         app:layout_constraintEnd_toEndOf="parent" />
 

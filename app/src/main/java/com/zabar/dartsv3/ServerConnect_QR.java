@@ -75,13 +75,13 @@ public class ServerConnect_QR extends AsyncTask<String, String, String> {
                 JSONObject reader = new JSONObject(s);
                 if (reader.has("err")){
                     String error_msg=reader.getJSONObject("err").getString("message");
-                    Toast.makeText(this.context, error_msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.context, error_msg + "InserverconnectQR", Toast.LENGTH_SHORT).show();
                 }
                 else if(reader.has("succ")){
                     String succ_msg=reader.getJSONObject("succ").getString("message");
                     JSONArray units=reader.getJSONArray("qrunits");
 
-                    Toast.makeText(this.context, succ_msg, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this.context, succ_msg, Toast.LENGTH_SHORT).show();
                     SharedPreferences sp= this.context.getSharedPreferences("authInfo",0 );
                     SharedPreferences.Editor spe=sp.edit();
 
