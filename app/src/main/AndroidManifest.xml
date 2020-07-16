@@ -29,7 +29,7 @@
         android:name=".App"
         android:allowBackup="true"
         android:background="@android:color/white"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/logo"
         android:label="DARTS"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
