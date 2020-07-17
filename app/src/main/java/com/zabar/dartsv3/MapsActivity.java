@@ -209,6 +209,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //bindService(callerService, this, BIND_AUTO_CREATE);
 
 
+        FloatingActionButton all_alerts = findViewById(R.id.all_alerts);
+        all_alerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MapsActivity.this, AllAlertsActivity.class);
+                startActivity(i);
+            }
+        });
 
 
 
@@ -323,8 +331,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent qrunitIntent=getIntent();
         qrLat_passed=qrunitIntent.getStringExtra("lat");
-        qrLong_passed=qrunitIntent.getStringExtra("longt");
+        qrLong_passed=qrunitIntent.getStringExtra("long");
         show_specific(qrLat_passed, qrLong_passed);
+        boolean navigate = qrunitIntent.getBooleanExtra("navigate", false);
+        if(navigate) {
+
+            //navigate(l1, l2);
+        }
         qrunitsOnMap();
         alertsOnMap();
     }

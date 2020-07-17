@@ -69,4 +69,17 @@
         app:layout_constraintBottom_toTopOf="@+id/units_icon"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/all_alerts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/alert_on_map"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/my_location"
+        app:layout_constraintEnd_toEndOf="@+id/map" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

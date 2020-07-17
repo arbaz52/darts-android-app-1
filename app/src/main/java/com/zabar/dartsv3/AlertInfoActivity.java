@@ -88,6 +88,24 @@ public class AlertInfoActivity extends AppCompatActivity implements Response.Lis
             }
         });
 
+
+
+        Button btnNavigate = findViewById(R.id.btnNavigate);
+        btnNavigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(alert != null){
+                    Intent mapIntent=new Intent(AlertInfoActivity.this, MapsActivity.class);
+                    mapIntent.putExtra("lat",alert.latitude+"");
+                    mapIntent.putExtra("long", alert.longitude+"");
+                    mapIntent.putExtra("navigate", true);
+                    startActivity(mapIntent);
+                }else{
+                    Toast.makeText(AlertInfoActivity.this, "Please wait, we're loading the information", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         //String alertId = "5f036297d2b69d25c86d3a59";
         Intent intent = getIntent();
         String alertId = intent.getStringExtra(KEY_ALERT_ID);

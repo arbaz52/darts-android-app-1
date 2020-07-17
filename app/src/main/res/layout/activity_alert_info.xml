@@ -27,9 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:text="Alert ID"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,9 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
                 android:text="When was this alert generated"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/id" />
 
@@ -50,16 +47,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:layout_marginEnd="8dp"
                 android:text="Suspect Recognized"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/when" />
 
             <include
                 android:id="@+id/suspect"
                 layout="@layout/layout_suspect"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginEnd="8dp"
@@ -73,9 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:layout_marginEnd="8dp"
                 android:text="Captured Frame"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/suspect" />
 
@@ -96,32 +89,38 @@
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/alertClosed"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnNavigate"
+            android:layout_width="149dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="1"
-            android:text='Alert was cloed, reason: "done"' />
-
-        <TextView
-            android:id="@+id/beingHandled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Alert is being handled by a QR Unit!" />
+            android:background="@drawable/rounded_green"
+            android:drawableLeft="@drawable/ic_map_black_24dp"
+            android:drawablePadding="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="On Map"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btnHandleAlert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner"
+            android:drawableLeft="@drawable/ic_notifications_active_black_24dp"
+            android:drawablePadding="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:text="Handle Alert"
             android:textColor="@color/white" />
 
@@ -129,10 +128,44 @@
             android:id="@+id/btnCloseAlert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner"
+            android:drawableLeft="@drawable/ic_close_black_24dp"
+            android:drawablePadding="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:text="Close Alert"
             android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/beingHandled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="Alert is being handled by a QR Unit!" />
+
+        <TextView
+            android:id="@+id/alertClosed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text='Alert was cloed, reason: "done"' />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
