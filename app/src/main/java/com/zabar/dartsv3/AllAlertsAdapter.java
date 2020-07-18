@@ -50,7 +50,7 @@ public class AllAlertsAdapter extends RecyclerView.Adapter<AllAlertsAdapter.MyVi
 
         suspectName.setText(alert.suspect.fullName);
         description.setText("Alert report for this suspect");
-        time.setText(TimeManager.format_diff(Calendar.getInstance().getTimeInMillis() - alert.time.getTime()));
+        time.setText(alert.time.toString());
         if(alert.isBeingHandled()){
             if(alert.isClosed()){
                 status.setText("Closed!");

@@ -587,7 +587,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvSubtitle.setText("Information about suspect is not available!");
                     }
 
-                    tvTime.setText(TimeManager.format_diff(Calendar.getInstance().getTimeInMillis() - alert.time.getTime()));
+                    tvTime.setText(alert.time.toString());
 
 
                     btnNavigate.setOnClickListener(new View.OnClickListener() {
